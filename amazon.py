@@ -1,29 +1,44 @@
 import pandas as pd
 
-class Reply:
-    def __init__(self, Reactie, ReactieLikes, ReactieDatum, ReactieDoor):
-        self.Reactie = Reactie
-        self.ReactieLikes = ReactieLikes
-        self.ReactieDatum = ReactieDatum
-        self.ReactieDoor = ReactieDoor
+'''
+Variables starting with a captital already existed in the csv-files (Door, Reacties, etc...)
+Variables starting with a small letter we made up ourselfs (content, repliedUsers, etc...)
 
+Classes:
+_Message - 'private' upper class
+│
+├─ Post (subclass of _Message) 
+│  └─ Poll (subclass of Post, since a Poll is a kind of Post) 
+│
+└─ Reply (subclass of _Message)
 
-class Post:
-    def __init__(self, Microblog, MicroblogLikes, Created, Door, isPoll):
-        self.Microblog = Microblog
-        self.MicroblogLikes = MicroblogLikes
-        self.Created = Created
-        self.Door = Door
-        self.isPoll = isPoll
-        self.Reacties = []
+User: class for all Users
+'''
+class _Message: # this upper class is only used for Post and Reply
+    def __init__(self, content, likes, date, creator):
+        self.content = content
+        self.likes = likes
+        self.date = date
+        self.creator = creator
 
-    #def __str__(self):
-    #    return("Post:", self.Microblog,
-    #    "\n of User: ", self.Door.getName())
+class Reply(_Message):
+    pass # for now, Reply is just the same as _Message
 
-    def addReaction(self, Reactie, ReactieLikes, ReactieDatum, ReactieDoor):
-        self.Reacties.append(Reply(Reactie, ReactieLikes, ReactieDatum, ReactieDoor))
-           
+class Post(_Message):
+    def __init__(self, Microblog, MicroblogLikes, Created, Door):
+        _Message.__init__(self, Microblog, MicroblogLikes, Created, Door)
+        self.Reacties = [] # [Reply, Reply, ...]
+        self.repliedUsers = [] # [User, User, ...]
+
+    def addReaction(self, Reactie, ReactieLikes, ReactieDatum, ReactieDoorObject):
+        self.Reacties.append(Reply(Reactie, ReactieLikes, ReactieDatum, ReactieDoorObject))
+        self.repliedUsers.append(ReactieDoorObject)
+
+class Poll(Post):
+    def __init__(self, Microblog, MicroblogLikes, Created, Door, choices=[]):
+        Post.__init__(self, Microblog, MicroblogLikes, Created, Door)
+        self.choices = choices
+
 class User:
     def __init__(self, FullName, Function='', LastLogin='', IsExternal='', ManagerLevel='', IsAccountManager='',
     HasAvatar='', HasPhonenumber='', Summary='', DateOfBirth='', EmployeeSince='', Organization='', posts=[]):
@@ -41,9 +56,5 @@ class User:
         self.Organization = Organization
         self.posts = posts
 
-    #def __str__(self):
-    #    return("Full Name:", self.FullName,
-    #    "\n Posts: ", self.posts)
-    
     def getName(self):
         return(self.FullName)

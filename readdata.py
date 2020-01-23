@@ -1,9 +1,7 @@
 import pandas as pd
 from amazon import *
-import sys
 
-VERBOSE = True
-
+VERBOSE = False
 
 def readUsers(userCSV):
     # read csv with the users
@@ -28,8 +26,8 @@ def readBlogs(microblogs, polls, userDict):
     blogsDF = pd.read_csv(microblogs, encoding='utf-8')
     # we use polls.csv to check whether a microblog is a 'post' or a 'poll'
     pollsDF = pd.read_csv(polls, encoding='utf-8')
-    #list of polls
-    allUniquePolls = set(pollsDF['Microblog'].tolist())
+    #making a 'list' of polls
+    allPolls = set(pollsDF['Microblog'].tolist())
     
     # adding blogs to dictionary-objects
     blogsDict = {}
@@ -41,13 +39,15 @@ def readBlogs(microblogs, polls, userDict):
         # if the microblog DOES NOT EXIST in blogsdict, create a new object in the dictionary
         if Microblog not in blogsDict:
 
-            # if the microblog exists in polls.csv it is a poll
-            isPoll = Microblog in allUniquePolls
-            blogsDict[Microblog] = Post(Microblog, row['MicroblogLikes'], row['Created'], userDict[row['Door']], isPoll)
+            if Microblog in allPolls: # if the microblog exists in polls.csv it is a poll
+                blogsDict[Microblog] = Poll(Microblog, row['MicroblogLikes'], row['Created'], userDict[row['Door']])
+            else: # it is not a poll, but only a 'normal' Post
+                blogsDict[Microblog] = Post(Microblog, row['MicroblogLikes'], row['Created'], userDict[row['Door']])
             
         # add reaction
-        if not (pd.isnull(row['Reactie']) or pd.isnull(row['ReactieLikes'])): # only add if 'Reactie' and likes are not NULL
+        if (not pd.isnull(row['Reactie'])) and (not pd.isnull(row['ReactieLikes'])): # only add if 'Reactie' and likes are not NULL
             blogsDict[Microblog].addReaction(row['Reactie'], row['ReactieLikes'], row['ReactieDatum'], userDict[row['ReactieDoor']])
+
         if VERBOSE:
             print(row['Reactie'])
             
