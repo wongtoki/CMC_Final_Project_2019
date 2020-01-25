@@ -1,5 +1,5 @@
 import pandas as pd
-from amazon import *
+from classes import *
 
 VERBOSE = False
 
@@ -50,10 +50,12 @@ def readBlogs(microblogs, polls, userDict):
 
         if VERBOSE:
             print(row['Reactie'])
+    return blogsDict
             
-def main():
-    userDict = readUsers('persons.csv')
-    readBlogs('microblogs.csv', 'polls.csv', userDict)
+def readcsv(usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv'):
+    userDict = readUsers(usercsv)
+    blogsDict = readBlogs(postcsv, pollcsv, userDict)
+    return userDict, blogsDict
 
 if __name__ == "__main__":
-    main()
+    readcsv()
