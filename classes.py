@@ -56,5 +56,5 @@ class User:
         self.Organization = Organization
         self.posts = posts
 
-    def getName(self):
+    def __str__(self): # Added because networkx graphs wants to print the userobject and we want to have it print a readable name
         return(self.FullName)

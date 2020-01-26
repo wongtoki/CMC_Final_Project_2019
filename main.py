@@ -21,7 +21,7 @@ def main():
     # first read the csv into objects
     userDict, blogsDict = readcsv(usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv')
     # now, create a graph
-    # creategraph(userDict, blogsDict)
+    createGraph(userDict, blogsDict)
 
 if __name__ == "__main__":
     main()
