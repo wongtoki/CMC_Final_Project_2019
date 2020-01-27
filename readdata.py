@@ -39,22 +39,22 @@ def readBlogs(microblogs, polls, userDict):
         # if the microblog DOES NOT EXIST in blogsdict, create a new object in the dictionary
         if Microblog not in blogsDict:
 
-            # add blog to blogsDict
+            # add blog to Blog
             if Microblog in allPolls: # if the microblog exists in polls.csv it is a poll
                 blogsDict[Microblog] = Poll(Microblog, row['MicroblogLikes'], row['Created'], userDict[row['Door']])
             else: # it is not a poll, but only a 'normal' Post
                 blogsDict[Microblog] = Post(Microblog, row['MicroblogLikes'], row['Created'], userDict[row['Door']])
-            # now, also add reaction to userDict
+            # now, also add reaction to the User
             userDict[row['Door']].addPost(blogsDict[Microblog])
 
         # add reaction to blogsdict
         if (not pd.isnull(row['Reactie'])) and (not pd.isnull(row['ReactieLikes'])): # only add if 'Reactie' and likes are not NULL
-            # add reaction to blogsdict
+            # add reaction to the Blog
             currentReply = Reply(row['Reactie'], row['ReactieLikes'], row['ReactieDatum'], userDict[row['ReactieDoor']])
             blogsDict[Microblog].addReaction(currentReply)
-            # now, also add reaction to userDict
+            # now, also add reaction to the User
             userDict[row['ReactieDoor']].addReply(currentReply)
-        
+
         if VERBOSE:
             print(row['Reactie'])
     return blogsDict
