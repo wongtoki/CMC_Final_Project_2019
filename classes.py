@@ -31,9 +31,9 @@ class Post(_Message):
         self.Reacties = [] # [Reply, Reply, ...]
         self.repliedUsers = [] # [User, User, ...]
 
-    def addReaction(self, Reactie, ReactieLikes, ReactieDatum, ReactieDoorObject):
-        self.Reacties.append(Reply(Reactie, ReactieLikes, ReactieDatum, ReactieDoorObject))
-        self.repliedUsers.append(ReactieDoorObject)
+    def addReaction(self, reply):
+        self.Reacties.append(reply)
+        self.repliedUsers.append(reply.creator)
 
     def getCreator(self):
         return self.creator
@@ -48,7 +48,8 @@ class Poll(Post):
 
 class User:
     def __init__(self, FullName, Function='', LastLogin='', IsExternal='', ManagerLevel='', IsAccountManager='',
-    HasAvatar='', HasPhonenumber='', Summary='', DateOfBirth='', EmployeeSince='', Organization='', posts=[]):
+    HasAvatar='', HasPhonenumber='', Summary='', DateOfBirth='', EmployeeSince='', Organization='',
+    posts=[], replies=[]):
         self.FullName = FullName
         self.Function = Function
         self.LastLogin = LastLogin
@@ -62,9 +63,13 @@ class User:
         self.EmployeeSince = EmployeeSince
         self.Organization = Organization
         self.posts = posts
+        self.replies = replies
 
     def __str__(self): # Added because networkx graphs wants to print the userobject and we want to have it print a readable name
         return(self.FullName.split()[0])
 
     def addPost(self, postobject):
         self.posts.append(postobject)
+
+    def addReply(self, replyobject):
+        self.replies.append(replyobject)
