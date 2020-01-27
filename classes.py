@@ -14,6 +14,7 @@ _Message - 'private' upper class
 
 User: class for all Users
 '''
+
 class _Message: # this upper class is only used for Post and Reply
     def __init__(self, content, likes, date, creator):
         self.content = content
@@ -33,6 +34,12 @@ class Post(_Message):
     def addReaction(self, Reactie, ReactieLikes, ReactieDatum, ReactieDoorObject):
         self.Reacties.append(Reply(Reactie, ReactieLikes, ReactieDatum, ReactieDoorObject))
         self.repliedUsers.append(ReactieDoorObject)
+
+    def getCreator(self):
+        return self.creator
+
+    def getRepliers(self):
+        return self.repliedUsers
 
 class Poll(Post):
     def __init__(self, Microblog, MicroblogLikes, Created, Door, choices=[]):
@@ -57,4 +64,7 @@ class User:
         self.posts = posts
 
     def __str__(self): # Added because networkx graphs wants to print the userobject and we want to have it print a readable name
-        return(self.FullName)
+        return(self.FullName.split()[0])
+
+    def addPost(self, postobject):
+        self.posts.append(postobject)

@@ -39,14 +39,19 @@ def readBlogs(microblogs, polls, userDict):
         # if the microblog DOES NOT EXIST in blogsdict, create a new object in the dictionary
         if Microblog not in blogsDict:
 
+            # add blog to blogsDict
             if Microblog in allPolls: # if the microblog exists in polls.csv it is a poll
                 blogsDict[Microblog] = Poll(Microblog, row['MicroblogLikes'], row['Created'], userDict[row['Door']])
             else: # it is not a poll, but only a 'normal' Post
                 blogsDict[Microblog] = Post(Microblog, row['MicroblogLikes'], row['Created'], userDict[row['Door']])
-            
-        # add reaction
+
+        # add reaction to blogsdict
         if (not pd.isnull(row['Reactie'])) and (not pd.isnull(row['ReactieLikes'])): # only add if 'Reactie' and likes are not NULL
+            # add reaction to blogsdict
             blogsDict[Microblog].addReaction(row['Reactie'], row['ReactieLikes'], row['ReactieDatum'], userDict[row['ReactieDoor']])
+        
+        # now, also add reaction to userDict
+        userDict[row['Door']].addPost(blogsDict[Microblog])
 
         if VERBOSE:
             print(row['Reactie'])
@@ -55,7 +60,9 @@ def readBlogs(microblogs, polls, userDict):
 def readcsv(usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv'):
     userDict = readUsers(usercsv)
     blogsDict = readBlogs(postcsv, pollcsv, userDict)
-    return userDict, blogsDict
+    
+    # until now, we used the keys to prevent double entrances, from now on, we only need the .values()
+    return set(userDict.values()), set(blogsDict.values())
 
 if __name__ == "__main__":
     readcsv()
