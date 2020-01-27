@@ -41,6 +41,14 @@ class Post(_Message):
     def getRepliers(self):
         return self.repliedUsers
 
+    @staticmethod
+    def getConnections(bloglist):
+        edgeList = []
+        for blog in bloglist: # original Post
+            for replier in blog.getRepliers(): # Reply
+                edgeList.append((blog.getCreator(), replier))
+        return edgeList
+
 class Poll(Post):
     def __init__(self, Microblog, MicroblogLikes, Created, Door, choices=[]):
         Post.__init__(self, Microblog, MicroblogLikes, Created, Door)
