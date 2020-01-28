@@ -14,7 +14,7 @@ main.py
 │     ├─ readBlogs() # from the csv and make objects of them
 │     └─ return userDict and blogsDict, two dictionaries with their correponding objects
 │
-└─ creategraph.py # with the help of userDict (and maybe blogsDict)
+└─ creategraph.py # with the help of [User1, User2, ...] and [Post1, Post2, ...]
    └─ TODO
 '''
 
