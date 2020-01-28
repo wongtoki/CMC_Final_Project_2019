@@ -1,6 +1,7 @@
 from readdata import *
 from createGraph import *
-
+from network import Pathfinder
+import random
 '''
 Order of the program:
 Classes:
@@ -17,11 +18,45 @@ main.py
    └─ TODO
 '''
 
+
 def main():
     # first read the csv into objects
-    users, blogs = readcsv(usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv')
+    users, blogs = readcsv(usercsv='persons.csv',
+                           postcsv='microblogs.csv', pollcsv='polls.csv')
+
     # now, create a graph
-    createGraph(users, blogs)
+    # createGraph(users, blogs)
+
+    import time
+
+    userdict = readUsers('persons.csv')
+    blogdict = readBlogs('microblogs.csv', 'polls.csv', userdict)
+
+    # Add the connections for a*
+    for blog in list(blogdict.values()):
+        for replier in blog.getRepliers():
+            if replier not in blog.getCreator().connections:
+                blog.getCreator().connections.append(replier)
+                if blog.getCreator() not in replier.connections:
+                    replier.connections.append(blog.getCreator())
+
+    pathfinder = Pathfinder()
+
+    user_a = random.choice(list(userdict.keys()))
+    user_b = random.choice(list(userdict.keys()))
+    while user_b == user_a:
+        user_b = random.choice(list(userdict.keys()))
+
+    print(f"Finding path from {user_a} to {user_b}")
+    path = pathfinder.find_path(
+        userdict[user_a], userdict[user_b])
+
+    path.pop()
+    for user in path:
+        print(user, end=" -> ")
+
+    print(user_b)
+
 
 if __name__ == "__main__":
     main()
