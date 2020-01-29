@@ -64,7 +64,7 @@ def readcsv(usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv'
     blogsDict = readBlogs(postcsv, pollcsv, userDict)
     
     # until now, we used the keys to prevent double entrances, from now on, we only need the .values()
-    return set(userDict.values()), set(blogsDict.values())
+    return userDict.values(), blogsDict.values()
 
 if __name__ == "__main__":
     readcsv()
