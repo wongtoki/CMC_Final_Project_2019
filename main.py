@@ -1,5 +1,6 @@
 from readdata import *
 from createGraph import *
+from classes import *
 from network import Pathfinder
 import random
 '''
@@ -17,7 +18,6 @@ main.py
 └─ creategraph.py # with the help of [User1, User2, ...] and [Post1, Post2, ...]
    └─ TODO
 '''
-
 
 def main():
     # first read the csv into objects
@@ -39,6 +39,10 @@ def main():
                 blog.getCreator().connections.append(replier)
                 if blog.getCreator() not in replier.connections:
                     replier.connections.append(blog.getCreator())
+
+    for user in userdict.values():
+        score = calcInteractivity(user)
+        user.setInteractivity(score)
 
     pathfinder = Pathfinder()
 
