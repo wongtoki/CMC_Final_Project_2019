@@ -9,66 +9,13 @@ Variables starting with a small letter we made up ourselfs (content, repliedUser
 Classes:
 _Message - 'private' upper class
 │
-├─ Post (subclass of _Message) 
-│  └─ Poll (subclass of Post, since a Poll is a kind of Post) 
+├─ Post (subclass of _Message)
+│  └─ Poll (subclass of Post, since a Poll is a kind of Post)
 │
 └─ Reply (subclass of _Message)
 
 User: class for all Users
 '''
-
-
-def calcInteractivity(user):
-    # First personal singular pronouns, assent words and definite articles for both EN and NL.
-    FPPs = ["i", "me", "mine", "my", "ik", "me", "mijn", "mij", "m\'n", "m’n"]
-    assentWords = ["yes", "okay", "ok", "agree", "true",
-                   "right", "ja", "klopt", "goed", "oké", "prima"]
-    definiteArticles = ["a", "an", "the", "de", "het"]
-
-    nrFPPs = 0
-    nrAssentWords = 0
-    nrDefiniteArticles = 0
-    tokens = []
-    totalNrPosts = len(user.posts) + len(user.replies)
-
-    # TODO: Get nr. of connections
-    nrConnections = 0
-    # TODO: Get nr. of replies to polls
-    nrPollReplies = 0
-
-    for post in user.posts:
-        text = post.getContent()
-        if isinstance(text, str):
-            # Check as there turned out to be floats within the data
-            tokens += text.split(" ")
-
-    for reply in user.replies:
-        text = reply.getContent()
-        tokens += text.split(" ")
-
-    nrTokens = len(tokens)
-    avgTokensPost = nrTokens / totalNrPosts
-
-    for token in tokens:
-        token = token.lower()
-        if token in FPPs:
-            nrFPPs += 1
-        if token in assentWords:
-            nrAssentWords += 1
-        if token in definiteArticles:
-            nrDefiniteArticles += 1
-
-    avgFPPs = nrFPPs / totalNrPosts
-    avgAssentWords = nrAssentWords / totalNrPosts
-    avgDefiniteArticles = nrDefiniteArticles / totalNrPosts
-
-    score = (totalNrPosts + avgTokensPost - avgFPPs + avgAssentWords +
-             avgDefiniteArticles + nrConnections + nrPollReplies)
-
-    print("\n{}: {}Posts: {}\nAVG Tokens: {}\nAVG FPPs: {}\nAVG Assent words: {}\nAVG definite articles: {}".format(
-        user.FullName, score, totalNrPosts, avgTokensPost, avgFPPs, avgAssentWords, avgDefiniteArticles))
-
-    return score
 
 
 class _Message:  # this upper class is only used for Post and Reply
@@ -139,6 +86,10 @@ class User:
         # Some values for path finding
         self.id = str(uuid.uuid4())
         self.interactivity = 1
+        self.avgAssentWords = 0
+        self.avgTokens = 0
+        self.avgFPPs = 0
+        self.avgdefs = 0
         self.parent = None
         self.connections = []
         self.fscore = 0
@@ -153,6 +104,64 @@ class User:
 
     def addReply(self, replyobject):
         self.replies.append(replyobject)
+
+    def calcInteractivity(self):
+        # First personal singular pronouns, assent words and definite articles for both EN and NL.
+        FPPs = ["i", "me", "mine", "my", "ik",
+                "me", "mijn", "mij", "m\'n", "m’n"]
+        assentWords = ["yes", "okay", "ok", "agree", "true",
+                       "right", "ja", "klopt", "goed", "oké", "prima"]
+        definiteArticles = ["the", "de", "het"]
+
+        nrFPPs = 0
+        nrAssentWords = 0
+        nrDefiniteArticles = 0
+        tokens = []
+        totalNrPosts = len(self.posts) + len(self.replies)
+
+        # TODO: Get nr. of connections
+        nrConnections = 0
+        # TODO: Get nr. of replies to polls
+        nrPollReplies = 0
+
+        for post in self.posts:
+            text = post.getContent()
+            if isinstance(text, str):
+                # Check as there turned out to be floats within the data
+                tokens += text.split(" ")
+
+        for reply in self.replies:
+            text = reply.getContent()
+            tokens += text.split(" ")
+
+        nrTokens = len(tokens)
+        avgTokensPost = nrTokens / totalNrPosts
+
+        for token in tokens:
+            token = token.lower()
+            if token in FPPs:
+                nrFPPs += 1
+            if token in assentWords:
+                nrAssentWords += 1
+            if token in definiteArticles:
+                nrDefiniteArticles += 1
+
+        avgFPPs = nrFPPs / totalNrPosts
+        avgAssentWords = nrAssentWords / totalNrPosts
+        avgDefiniteArticles = nrDefiniteArticles / totalNrPosts
+
+        score = (totalNrPosts + avgTokensPost - avgFPPs + avgAssentWords +
+                 avgDefiniteArticles + nrConnections + nrPollReplies)
+
+        print("\n{}: {}\nPosts: {}\nAVG Tokens: {}\nAVG FPPs: {}\nAVG Assent words: {}\nAVG definite articles: {}".format(
+            self.FullName, score, totalNrPosts, avgTokensPost, avgFPPs, avgAssentWords, avgDefiniteArticles))
+
+        self.interactivity = score
+        self.avgAssentWords = avgAssentWords
+        self.avgdefs = avgDefiniteArticles
+        self.avgFPPs = avgFPPs
+        self.avgTokens = avgTokensPost
+        return score
 
     def setInteractivity(self, score):
         self.interactivity = score

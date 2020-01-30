@@ -19,9 +19,10 @@ main.py
    └─ TODO
 '''
 
+
 def main():
     # first read the csv into objects
-    #users, blogs = readcsv(usercsv='persons.csv',
+    # users, blogs = readcsv(usercsv='persons.csv',
     #                       postcsv='microblogs.csv', pollcsv='polls.csv')
 
     # now, create a graph
@@ -29,7 +30,8 @@ def main():
 
     import time
 
-    userdict, blogdict = readcsv(usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv')
+    userdict, blogdict = readcsv(
+        usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv')
 
     # Add the connections for a*
     for blog in list(blogdict.values()):
@@ -39,9 +41,29 @@ def main():
                 if blog.getCreator() not in replier.connections:
                     replier.connections.append(blog.getCreator())
 
+    interDict = {"Username": [],
+                 "Interactivity": [],
+                 "Avg.AssentWords": [],
+                 "Avg.Tokens": [],
+                 "Avg.FirstPersonPronouns": [],
+                 "Avg.DefArticles": [],
+                 "Posts": []}
+
     for user in userdict.values():
-        score = calcInteractivity(user)
-        user.setInteractivity(score)
+        score = user.calcInteractivity()
+        interDict["Username"].append(user.FullName)
+        interDict["Interactivity"].append(score)
+        interDict["Avg.AssentWords"].append(user.avgAssentWords)
+        interDict["Avg.Tokens"].append(user.avgTokens)
+        interDict["Avg.FirstPersonPronouns"].append(user.avgFPPs)
+        interDict["Avg.DefArticles"].append(user.avgdefs)
+        interDict["Posts"].append(len(user.posts))
+
+    import pandas
+
+    data = pandas.DataFrame(interDict)
+    data.to_csv("interactivity_results.csv")
+    print("Successfully exported results.")
 
     pathfinder = Pathfinder()
 
