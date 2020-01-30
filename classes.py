@@ -17,34 +17,38 @@ _Message - 'private' upper class
 User: class for all Users
 '''
 
+
 def calcInteractivity(user):
-    # First personal singular pronouns, assent words and definite articles for both EN and NL. 
+
+    # First personal singular pronouns, assent words and definite articles for both EN and NL.
     FPPs = ["i", "me", "mine", "my", "ik", "me", "mijn", "mij"]
-    assentWords = ["yes", "okay", "ok", "agree", "true", "right", "ja", "klopt", "goed", "oké", "prima"]
+    assentWords = ["yes", "okay", "ok", "agree", "true",
+                   "right", "ja", "klopt", "goed", "oké", "prima"]
     definiteArticles = ["a", "an", "the", "de", "het"]
-  
+
     nrFPPs = 0
     nrAssentWords = 0
-    nrDefiniteArticles = 0 
+    nrDefiniteArticles = 0
     tokens = []
     totalNrPosts = len(user.posts) + len(user.replies)
+
     # TODO: Get nr. of connections
     nrConnections = 0
     # TODO: Get nr. of replies to polls
     nrPollReplies = 0
-        
+
     for post in user.posts:
         text = post.getContent()
         if isinstance(text, str):
             # Check as there turned out to be floats within the data
             tokens += text.split(" ")
-    
+
     for reply in user.replies:
         text = reply.getContent()
         tokens += text.split(" ")
 
     nrTokens = len(tokens)
-    avgTokensPost = nrTokens / totalNrPosts 
+    avgTokensPost = nrTokens / totalNrPosts
 
     for token in tokens:
         token = token.lower()
@@ -59,9 +63,12 @@ def calcInteractivity(user):
     avgAssentWords = nrAssentWords / totalNrPosts
     avgDefiniteArticles = nrDefiniteArticles / totalNrPosts
 
-    score = (totalNrPosts + avgTokensPost - avgFPPs + avgAssentWords + avgDefiniteArticles + nrConnections + nrPollReplies) 
+    score = (totalNrPosts + avgTokensPost - avgFPPs + avgAssentWords +
+             avgDefiniteArticles + nrConnections + nrPollReplies)
 
-    print("\n{}: {}Posts: {}\nAVG Tokens: {}\nAVG FPPs: {}\nAVG Assent words: {}\nAVG definite articles: {}".format(user.FullName,score, totalNrPosts,avgTokensPost,avgFPPs,avgAssentWords,avgDefiniteArticles))
+    print("\n{}: {}Posts: {}\nAVG Tokens: {}\nAVG FPPs: {}\nAVG Assent words: {}\nAVG definite articles: {}".format(
+        user.FullName, score, totalNrPosts, avgTokensPost, avgFPPs, avgAssentWords, avgDefiniteArticles))
+
     return score
 
 
@@ -133,12 +140,12 @@ class User:
 
         # Some values for path finding
         self.id = str(uuid.uuid4())
-        self.interactivity = 0
+        self.interactivity = 1
         self.parent = None
         self.connections = []
         self.fscore = 0
         self.hscore = 0
-        self.gscore = 0
+        self.gscore = 1
 
     def __str__(self):  # Added because networkx graphs wants to print the userobject and we want to have it print a readable name
         return(self.FullName.split()[0])
@@ -153,4 +160,4 @@ class User:
         self.interactivity = score
 
     def getInteractivity(self):
-        return self.interactivity  
+        return self.interactivity
