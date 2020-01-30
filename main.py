@@ -21,16 +21,15 @@ main.py
 
 def main():
     # first read the csv into objects
-    users, blogs = readcsv(usercsv='persons.csv',
-                           postcsv='microblogs.csv', pollcsv='polls.csv')
+    #users, blogs = readcsv(usercsv='persons.csv',
+    #                       postcsv='microblogs.csv', pollcsv='polls.csv')
 
     # now, create a graph
     # createGraph(users, blogs)
 
     import time
 
-    userdict = readUsers('persons.csv')
-    blogdict = readBlogs('microblogs.csv', 'polls.csv', userdict)
+    userdict, blogdict = readcsv(usercsv='persons.csv', postcsv='microblogs.csv', pollcsv='polls.csv')
 
     # Add the connections for a*
     for blog in list(blogdict.values()):
