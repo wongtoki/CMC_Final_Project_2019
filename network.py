@@ -50,10 +50,10 @@ class Pathfinder(object):
 
         while True:
             if current == self.start:
-                waypoints.append(self.start.FullName)
+                waypoints.append(self.start)
                 break
 
-            waypoints.append(current.FullName)
+            waypoints.append(current)
             current = current.parent
 
         waypoints.reverse()

@@ -94,7 +94,7 @@ class User:
         self.connections = []
         self.fscore = 0
         self.hscore = 0
-        self.gscore = 1
+        self.gscore = 0
 
     def __str__(self):  # Added because networkx graphs wants to print the userobject and we want to have it print a readable name
         return(self.FullName.split()[0])
@@ -135,7 +135,7 @@ class User:
             tokens += text.split(" ")
 
         nrTokens = len(tokens)
-        avgTokensPost = nrTokens / totalNrPosts
+        avgTokensPost = nrTokens / totalNrPosts * 0.1
 
         for token in tokens:
             token = token.lower()
@@ -150,7 +150,7 @@ class User:
         avgAssentWords = nrAssentWords / totalNrPosts
         avgDefiniteArticles = nrDefiniteArticles / totalNrPosts
 
-        score = (totalNrPosts + avgTokensPost - avgFPPs + avgAssentWords +
+        score = (totalNrPosts * 0.1 + avgTokensPost - avgFPPs + avgAssentWords +
                  avgDefiniteArticles + nrConnections + nrPollReplies)
 
         print("\n{}: {}\nPosts: {}\nAVG Tokens: {}\nAVG FPPs: {}\nAVG Assent words: {}\nAVG definite articles: {}".format(
@@ -161,6 +161,8 @@ class User:
         self.avgdefs = avgDefiniteArticles
         self.avgFPPs = avgFPPs
         self.avgTokens = avgTokensPost
+
+        self.gscore = 1 / self.interactivity
         return score
 
     def setInteractivity(self, score):

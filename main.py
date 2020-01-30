@@ -76,9 +76,11 @@ def main():
     path = pathfinder.find_path(
         userdict[user_a], userdict[user_b])
 
+    createGraph(userdict.values(), path)
+
     path.pop()
     for user in path:
-        print(user, end=" -> ")
+        print(user.FullName, end=" -> ")
 
     print(user_b)
 
