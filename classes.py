@@ -19,9 +19,8 @@ User: class for all Users
 
 
 def calcInteractivity(user):
-
     # First personal singular pronouns, assent words and definite articles for both EN and NL.
-    FPPs = ["i", "me", "mine", "my", "ik", "me", "mijn", "mij"]
+    FPPs = ["i", "me", "mine", "my", "ik", "me", "mijn", "mij", "m\'n", "m’n"]
     assentWords = ["yes", "okay", "ok", "agree", "true",
                    "right", "ja", "klopt", "goed", "oké", "prima"]
     definiteArticles = ["a", "an", "the", "de", "het"]
@@ -120,8 +119,7 @@ class Poll(Post):
 
 class User:
     def __init__(self, FullName, Function='', LastLogin='', IsExternal='', ManagerLevel='', IsAccountManager='',
-                 HasAvatar='', HasPhonenumber='', Summary='', DateOfBirth='', EmployeeSince='', Organization='',
-                 posts=[], replies=[]):
+                 HasAvatar='', HasPhonenumber='', Summary='', DateOfBirth='', EmployeeSince='', Organization=''):
 
         self.FullName = FullName
         self.Function = Function
@@ -135,8 +133,8 @@ class User:
         self.DateOfBirth = DateOfBirth
         self.EmployeeSince = EmployeeSince
         self.Organization = Organization
-        self.posts = posts
-        self.replies = replies
+        self.posts = []
+        self.replies = []
 
         # Some values for path finding
         self.id = str(uuid.uuid4())
