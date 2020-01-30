@@ -30,10 +30,11 @@ class Pathfinder(object):
                     continue
 
                 tentative_gscore = current.gscore + \
-                    current.interactivity + neighbour.interactivity
+                    1 / (current.interactivity + neighbour.interactivity)
                 if neighbour not in open_set or tentative_gscore < neighbour.gscore:
 
-                    neighbour.hscore = self.target.interactivity + neighbour.interactivity
+                    neighbour.hscore = 1 / \
+                        (self.target.interactivity + neighbour.interactivity)
                     neighbour.fscore = neighbour.gscore + neighbour.hscore
 
                     neighbour.parent = current
