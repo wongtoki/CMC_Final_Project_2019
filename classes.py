@@ -135,7 +135,7 @@ class User:
             tokens += text.split(" ")
 
         nrTokens = len(tokens)
-        avgTokensPost = nrTokens / totalNrPosts * 0.1
+        avgTokensPost = nrTokens / totalNrPosts
 
         for token in tokens:
             token = token.lower()
@@ -150,7 +150,7 @@ class User:
         avgAssentWords = nrAssentWords / totalNrPosts
         avgDefiniteArticles = nrDefiniteArticles / totalNrPosts
 
-        score = (totalNrPosts * 0.1 + avgTokensPost - avgFPPs + avgAssentWords +
+        score = (totalNrPosts * 0.1 + avgTokensPost * 0.1 - avgFPPs + avgAssentWords +
                  avgDefiniteArticles + nrConnections + nrPollReplies)
 
         print("\n{}: {}\nPosts: {}\nAVG Tokens: {}\nAVG FPPs: {}\nAVG Assent words: {}\nAVG definite articles: {}".format(
